@@ -1,0 +1,156 @@
+1. Write a PL/SQL block of code to update salary of employee ‘7788’ to 35000 if the salary is less than 35000.
+
+
+declare
+salary emp.sal%type;
+begin
+select sal into salary
+from emp
+where empno=7788;
+if salary<35000 then
+	update emp
+	set sal=35000
+	where empno=7788;
+	DBMS_OUTPUT.PUT_LINE('salary update successfully.');
+else
+	DBMS_OUTPUT.PUT_LINE('Employee already has a salary of 35000 or more.');
+end if;
+end;
+/
+
+
+2. Write a PL/SQL block of code to insert all details of employee ‘7698’ to a new table temp_emp, which has same structure as emp table.
+
+
+create table temp_emp AS
+select *
+from emp
+where 1=2;
+
+
+
+3. Write a PL/SQL block of code to display ones name like “Hello <Name>’, Whatever entered at run time.
+
+
+declare
+	emp_details emp%ROWTYPE;
+begin
+	select * into emp_details
+	from emp
+	where empno=7698;
+	insert into temp_emp
+	values emp_details;
+	DBMS_OUTPUT.PUT_LINE('Employee details inserted into temp_emp table successfully.');
+exception
+	when others then
+		DBMS_OUTPUT.PUT_LINE('Error: '||SQLERRM);
+end;
+/
+
+
+
+4. Write a PL/SQL block of code to print first 50 whole no.
+
+
+declare 
+	v_counter NUMBER := 1;
+begin
+	while v_counter <= 50 loop
+		DBMS_OUTPUT.PUT_LINE(v_counter);
+		v_counter := v_counter + 1;
+	end loop;
+end;
+/
+
+
+5. Write a PL/SQL block of code to update the commission of employee number 7369 to Rs. 3000 if it NULL; else raise his commission by 25%.
+
+
+declare 
+	v_commission emp.comm%type;
+begin
+	select comm into v_commission
+	from emp
+	where empno = 7369;
+	
+	if v_commission is null then
+		update emp
+		set comm = 3000
+		where empno = 7369;
+		
+		DBMS_OUTPUT.PUT_LINE('commission update to rs 3000 for employee 7369.');
+	else
+		update emp
+		set comm = comm * 1.25
+		where empno = 7369;
+		DBMS_OUTPUT.PUT_LINE('commission increased by 25% for employee 7369.');
+	end if;
+end;
+/
+
+
+
+6. Write a PL/SQL block of code to print even number between 1 and 10 using for loop.
+
+
+declare 
+	v_number number;
+begin 
+	for v_number in 1..10 loop
+		if mod(v_number,2) = 0 then 
+			DBMS_OUTPUT.PUT_LINE(v_number);
+		end if;
+	end loop;
+end;
+/
+
+
+
+7. Write a PL/SQL block of code that will allow 5% salary increment of an employee (emp number should be taken from user) if the employee working in the organization more than 22 year.
+
+
+
+declare
+	v_empno emp.empno%type;
+	v_hiredate emp.hiredate%type;
+	v_years_worked number;
+	v_increment_amount number;
+begin
+	v_empno := &emp_number;
+
+	select hiredate into v_hiredate
+	from emp
+	where empno = v_empno;
+
+	v_years_worked := trunc(months_between (sysdate, v_hiredate)/12);
+
+	if v_years_worked > 22 then
+		select sal* 0.05 into v_increment_amount
+		from emp
+		where empno = v_empno;
+		
+		update emp
+		set sal = sal+ v_increment_amount
+		where empno = v_empno;
+
+		DBMS_OUTPUT.PUT_LINE('Salary incremented by '||v_increment_amount || 'for employee' || v_empno);
+	else
+		DBMS_OUTPUT.PUT_LINE('Employee has not work for more then 22 years .no increment applied.');
+	end if;
+exception 
+	when no_data_found then 
+		DBMS_OUTPUT.PUT_LINE('Employee with empno '|| v_empno || 'not found.');
+	when others then 
+		DBMS_OUTPUT.PUT_LINE('An error occurred : ' || SQLERRM);
+end;
+/
+
+
+
+
+
+
+
+
+
+

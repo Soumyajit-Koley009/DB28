@@ -1,0 +1,158 @@
+1. Display empno, ename, sal in ascending order of salary from emp table.
+
+
+ select ename ,empno,sal from emp order by sal asc;
+
+
+2. List ename, sal, job and deptno in descending order of deptno and salary.
+
+
+select ename,job ,sal,deptno from emp order by deptno desc, sal desc;
+
+
+3. List ename, sal, PF, HRA, DA and GROSS in ascending order of Gross. [Here PF is 12% of sal, HRA is 15% of sal, DA is 
+90% of sal and GROSS is sum of sal, PF, HRA, DA] 
+
+
+select ename,sal,(sal*0.12) as PF ,(sal*0.15) as HRA, (sal*0.90) as DA,(sal*0.12)+(sal*0.15)+ (sal*0.90)+sal as GROSS from emp order by GROSS asc;
+
+
+4. List the maximum salary of employee working as a salesman.
+
+
+select max(sal) as MAX_SALARY from emp where job='SALESMAN';
+
+
+5. List the average salary and no of employees working in dept 20.
+
+
+select avg(sal) as AVG_SAL, count(*) from emp where deptno='20';
+
+
+6. Display deptno, no. of employees in each department.
+
+
+ select deptno,count(*) as EMP_COUNT from emp group by deptno;
+
+
+7. List deptno, total salary payable in each department.
+
+
+select deptno,sum(sal) as TOTAL_SALARY from emp group by deptno;
+
+
+8. List jobs and the no of employees in each job in descending order of no. of employees.
+
+
+select job ,count(*) as emp_count from emp group by job order by count(*) desc;
+
+
+9. List total, maximum, minimum and average salary of employee’s job wise.
+
+
+select sum(sal) as TOTAL_SALARY , min(sal) as MIN_SALARY ,max(sal) as MAX_SALARY, avg(sal) as AVG_SAL from emp group by job;
+
+
+10. List the average salary for each job excluding manager
+
+
+select job,avg(sal) from emp where job <> 'MANAGER' group by job;
+
+
+11. List total, maximum, minimum and average salary of employee’s job-wise for dept no. 20 only.
+
+
+select sum(sal) as TOTAL_SALARY , min(sal) as MIN_SALARY ,max(sal) as MAX_SALARY, avg(sal) as AVG_SAL from emp where deptno='20' group by job;
+
+
+12. List average monthly salary for each job within department.
+
+
+select deptno, job,avg (sal) as AVG_MONTHLY_SALARY from emp group by job,deptno order by deptno;
+
+
+13. List average salary for all departments where more than 5 people are working.
+
+
+select deptno,avg(sal) from emp group by deptno having count(*)>5;
+
+
+14. List jobs of all employees where maximum salary is greater than or equal to 5000.
+
+
+select job from emp group by job having max(sal) >= 5000;
+
+
+15. Display total, maximum, minimum and average salaries of employee’s job-wise for department 20 and list only those rows having average salary greater than 1000.
+
+
+ select sum(sal) as TOTAL_SALARY , min(sal) as MIN_SALARY ,max(sal) as MAX_SALARY, avg(sal) as AVG_SAL from emp where deptno='20' group by job having avg(sal)>=1000;
+
+
+16. Display total, maximum, minimum and average salaries of employee’s job-wise for department 20 and list only those rows having average salary greater than 1000 and arrange the above output in descending order of total salary.
+
+
+ select sum(sal) as TOTAL_SALARY , min(sal) as MIN_SALARY ,max(sal) as MAX_SALARY, avg(sal) as AVG_SAL from emp where deptno='20' group by job having avg(sal)>=1000 order by sum(sal) desc;
+
+
+17. Calculates the average of the maximum salaries of all the departments from emp table.
+
+
+select avg(max(sal)) from emp group by deptno;
+
+
+18. Display the standard deviation (sd) of salary for each job type having sd >0 from emp table.
+
+
+select stddev(sal) as Standard_Deviation  from emp  having stddev(sal) >0 group by job;
+
+
+
+19. Count no. of employees whose commission is greater than 300.
+
+
+select count(*) from emp where comm >300 ;
+
+
+20. Display sum of commission for each department after substituting 100 in commission if it is NULL and order the result in descending order of department.
+
+
+select deptno,sum(nvl(comm,100)) as SUM_COMM from emp group by deptno order by deptno desc;
+
+
+21. Display no. of manager present in employee table.
+
+
+select count(*) as No_of_Manager from emp where job='MANAGER';
+
+
+22. List of employee names and commissions, substituting "Not Applicable" if the employee receives no commission for those whose name has contained a “M” and order this result as descending order of name.
+
+
+select ename, nvl(to_char(comm) ,'not applicable') from emp where ename like '%M%' order by ename desc ;
+
+
+23. List names, salary and commission of employees whose name has contained a “M” when the income of some employees is made up of salary plus commission, or just salary, depending on whether the comm column of employees is null or not and order the result as ascending order of name.
+
+
+select ename ,sal, nvl(to_char(comm),'NOT APPLICABLE') from emp where ename like '%M%' order by ename desc;
+
+
+
+24. Display the name of the employee where first character of each name is capital one.
+
+
+select initcap(ename) from emp;
+
+
+25. Select the substring of 3 characters long starting form 2nd character of job type from emp table when job is ‘SALESMAN’
+
+
+select substr(job,2,3) as SUBSTR from emp  where job = 'SALESMAN';
+
+select substr(job,2,3) as SUBSTR from emp  where job = 'SALESMAN' group by job;
+
+
+
+
+

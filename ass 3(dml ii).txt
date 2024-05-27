@@ -1,0 +1,137 @@
+A. create table emp as select * from scott.emp;
+B. create table dept as select * from scott.dept;
+
+
+
+1. Count the total number of orders.
+
+select count(qty_ordered) from sales_order_details;
+
+2. Calculate the average sale price of all the products.
+
+ select avg (sell_price ) from Product_master;
+
+3. Count the number of products having price greater than or equal to 1500.
+
+ select count (product_no) from product_master where sell_price >=1500;
+
+4. Determine the maximum and minimum product prices. Rename the output as max_price and min_price respectively.
+
+ select max(sell_price) max_price,min(sell_price) min_price from product_master;
+
+5. Create the following tables and insert the data as mentioned:
+Assignment 3
+ Dept table and dept table data 
+
+All from emp txt
+
+
+6. Solve the following SQL (DML) query use Emp and Dept table created above.
+ 
+a) List all department no, employee no, manager no. from emp table.
+
+ select deptno,empno,mgr from emp;
+ 
+b) List all department name and location from dept table.
+
+select dname,loc from dept;
+ 
+c) List the employees belong to the department 20.
+
+select * from emp where deptno=20;
+
+d) List the name and salary of the employee whose salary is more than 2500.
+
+select sal, ename from emp where sal>2500;
+
+e) List the details of the employee who have joined before end of July 81.
+
+select * from emp where hiredate<'31-jul-81';
+
+f) List the name of the employees who are not manager.
+
+select ename from emp where job not like 'MANAGER';
+
+g) List the name of employees whose name end with ‘S’.
+
+select ename from emp where ename like'%S';
+
+h) List the name of employees whose name has exactly 5 characters long.
+
+select ename from emp where length(ename)=5;
+
+i) List the name of employees whose name having ‘R’ as the third character.
+
+select ename from emp where ename like '__R%';
+
+j) List all employee names and their salaries, whose salary lies between 1500/- and 
+3500/- both inclusive.
+
+select ename, sal from emp where sal>=1500 and sal<=3500;
+
+k) List all employee names and their and their manager whose manager is 7902 or 7566 0r 7788.
+
+select ename,mgr from emp where mgr in (7902,7566,7789);
+
+l) List all employees which start with either J or T.
+
+select ename from emp where ename like  'J%' or ename like 'T%';
+
+m) List all employee names and jobs, whose job title includes M or P.
+
+select ename,job from emp where job like '%M%' or job like '%P%';
+
+n) List all jobs available in employee table.
+
+select distinct(job) from emp;
+
+o) List all employees who belong to the department 10 or 20.
+
+select ename from emp where deptno=10 or deptno=20;
+
+p) List all employee names, salary and 15% raise in salary.
+
+select ename,sal*0.15 salary from emp;
+
+q) List minimum, maximum, average salaries of employee.
+
+select max(sal) max_sal, min(sal) min_sal, avg(sal) avg_sal from emp;
+
+r) Find how many job titles are available in employee table.
+
+select count(unique(job)) from emp;
+
+
+s) What is the difference between maximum and minimum salaries of employees in the 
+organization?
+
+select max(sal)-min(sal) from emp;
+
+
+t) Find how much amount the company is spending towards salaries.
+
+select sum(sal) total_salary from emp;
+
+u) Display name of employees with deptno. 20.
+
+select ename from emp where deptno=20;
+
+v) List ename who are not eligible for commission.
+
+select ename  from emp where comm is null;
+
+w) Find no.of dept in employee table.
+
+ select count(distinct(deptno)) from emp;
+
+x) List ename and designation of the employee who does not report to anybody.
+
+select ename , job from emp where mgr is null;
+
+y) List the name of the employees who are less than 38 years old in the organization 
+with respect to today’s date
+
+select ename from emp where (hiredate-sysdate)/365 <= 38;
+
+
+

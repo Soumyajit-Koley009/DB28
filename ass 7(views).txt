@@ -1,0 +1,152 @@
+1. Create a view D_10EMP containing details of employees in department 10.
+ 
+
+Create view D_10EMP
+      (Emp_no, Name, Salary, Dept_no)
+      as select
+      EMPNO, ENAME, SAL, DEPTNO from emp where DEPTNO=10;
+
+create view d_10emp as 
+select * from emp where deptno =10;
+
+
+2. Create a view Dept_Summary containing Dname, MINSal, MAXSal, AVGSal.
+
+
+Create view Dept_Summary
+  (Dname, MINSAL, MAXSAL, AVGSAL)
+  as select
+  dept. DNAME, min (SAL), max (SAL), avg (SAL) from emp, dept where emp. DEPTNO = dept. DEPTNO group by DNAME;
+
+
+
+3. Create a view Emp_Data which would validate entry of any INSERT/ UPDATE command so that Sal figure would be between 10000 to 20000 and MGR would have to be a valid Empno, and Deptno must exists on Dept table.
+
+
+Create view Emp_data
+ as select
+ EMPNO, ENAME, JOB, MGR, SAL, DEPTNO from emp where SAL between 10000 and 20000 and MGR in (Select distinct EMPNO from emp) and DEPTNO in
+ (select DEPTNO from dept)
+ with CHECK option;
+
+
+
+4. Create a view which restricts data access to a valid employee’s own details on the Emp table and access time to office hours (09-17 and MON- SAT).
+
+
+ create or replace view Emp_details
+ as select EMPNO, ENAME, JOB, SAL from emp where Ename='&Employeename'                                                                    
+ and TO_CHAR(SYSDATE,'HH24') between 9 and 17 
+ and TO_CHAR(SYSDATE,'D') between 2 and 6
+ with CHECK option;
+
+Enter value for employeename: SCOTT
+old   2: as select EMPNO, ENAME, JOB, SAL from emp where Ename='&Employeename' and
+new   2: as select EMPNO, ENAME, JOB, SAL from emp where Ename='SCOTT' and
+
+View created.
+
+
+5. Create a view EMPLOYEES from emp table which contains empno, ename, job, dept and validate the deptno. that must be in Dept table.
+
+
+ Create view EMPLOYEES
+ (empno, ename, job, dept)
+ as select EMPNO, ENAME, JOB, DEPTNO from emp where DEPTNO in (select  
+     DEPTNO from dept)
+ with CHECK option;
+
+
+6. Create a READ only view EMP_READ from emp table which contains job, minsal, maxsal.
+
+
+ Create view EMP_READ
+ (Job, minsal, maxsal)
+ as select JOB, min (SAL), max (SAL) from emp group by JOB
+ with READ ONLY;
+
+
+7. Table Client_master
+ 
+A. Create a view vw_clent_master using Client_no, Name, Address1 and Bal_due
+
+create view vw_client_master
+(Client_no, Name, Address1, Bal_due)
+ as select
+ CLIENT_NO, NAME, ADDRESS1, BALANCE_DUE from client_master;
+
+
+
+i. Insert at least 3 records to vw_client_master.
+
+ INSERT INTO vw_client_master VALUES
+ ('C007','Sita','B/34',2200);
+
+
+
+INSERT INTO vw_client_master VALUES
+ ('C008','Seema','v_14',2900);
+ row created.
+
+
+ INSERT INTO vw_client_master VALUES
+('C009','Riya','I/4',4900);
+
+
+
+ii. Update a record to vw_client_master.
+
+
+ Update vw_client_master set CLIENT_NO='C009' where CLIENT_NO='C008';
+
+
+iii. Delete a record from vw_client_master.
+
+
+Delete from vw_client_master where client_no='C009';
+
+
+And check that the above operation if the base table is affected or not.
+
+->SQL>Select * from client_master;
+Use this command to check the implementations.
+
+
+B. Create a view Vw_sales_det using Order_no, Order date, Product_no, Qty_ordered, and order_status for all order which have already marked as ‘Backorder’. (Using the tables sales_order, sales_order_details).
+
+
+ create or replace view Vw_sales_det
+ (Order_no, Order_date, Product_no, Qty_ordered, order_status)
+ as select
+ sales_order. ORDER_NO, ORDER_DATE, PRODUCT_NO, QTY_DISP, ORDER_STATUS from sales_order, sales_order_details where sales_order. ORDER_NO=sales_order_details.ORDER_NO and ORDER_STATUS='Backorder';
+
+View created.
+
+
+i. Insert a record to vw_sales_det.
+
+SQL> INSERT INTO Vw_sales_det VALUE
+    2 (019009,’27-JAN-96’,’P07970’,5,’Backorder’);
+
+ERROR: View or function ‘Vw_sales_det’ is not updatable because the modification affects multiple base tables.
+
+
+ii. Update the client_no for a particular order_no.
+
+SQL> Update Vw_sales_det set CLIENT_NO='C006' where ORDER_NO='019009';
+
+ERROR: View or function ‘Vw_sales_det’ is not updatable because the modification affects multiple base tables.
+
+
+iii. Delete a record.
+
+SQL> Delete from Vw_sales_det where ORDER_NO=019001;
+
+ERROR.
+
+
+iv. Remove the views from database.
+
+
+SQL>DROP VIEW Vw_sales_det;
+

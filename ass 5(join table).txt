@@ -1,0 +1,135 @@
+1. Display empno, emoname, dname and loc from emp and dept table.
+
+ 
+select empno,ename,dname,loc from emp E ,dept D where e.deptno=d.deptno;
+
+
+2. Display empno, empname and their deptno, dpetname and loc from emp and dept table.
+ 
+
+select empno,ename,e.deptno,dname,loc from emp E, dept D where e.deptno=d.deptno;
+
+
+3. Display the list of employees working in each department and with this display the department information even if no employee belongs to that department.
+
+
+select * from dept left outer join emp on emp.deptno=dept.deptno;
+
+select * from emp e,dept d where e.deptno(+)=d.deptno;
+
+
+
+4. List the employee name and their corresponding manager name from emp table.
+
+
+select E.ename, M.ename from emp E, emp M where E.mgr=M.empno;
+
+
+5. List the employee name and their corresponding manager name from emp table along this select that employee who have no manager.
+
+
+ select E.ename, M.ename from emp E, emp M where E.mgr=M.empno(+);
+
+
+6. List all employees who joined the company before their manager.
+
+
+ select E.ename, M.ename,E.hiredate,M.hiredate from emp E, emp M where E.mgr=M.empno and E.hiredate<M.hiredate;
+
+
+7. Find names, job and salaries of all employees and also his boss.
+
+
+select E.ename,E.job,E.sal,M.sal, M.ename from emp E, emp M where E.mgr=M.empno;
+
+
+8. Find the names of those employees who earn more than their boss.
+
+
+select E.ename,E.job,E.sal,M.sal, M.ename from emp E, emp M where E.mgr=M.empno and e.sal>m.sal;
+
+
+9. How much Miller needs to earn to be in BLAKE’s Grade?
+
+
+select (select min(sal) from emp group by job having job=(select job from emp where ename like 'BLAKE'))
+    -sal as DIFFERENCE from emp where ename like 'MILLER';
+
+
+
+10. List the employee name and their corresponding manager name from emp table where employee name includes an “A” and display will be appeared as in the example given below. 
+Employees and Their Managers
+Allen works for Blake
+Blake works for King
+.................
+..............
+
+
+select E.ename || 'work for' || M.ename as "Employee and Their Manager" from emp E,emp M where E.mgr=M.empno;
+
+
+
+
+11. Display different designations present in department 20 and 30.
+
+
+ select distinct(job) from emp where deptno=20 union select distinct(job) from emp where deptno=30;
+
+
+12. List the job common to department 20 and 30.
+
+
+ select distinct(job) from emp where deptno=20 intersect select distinct(job) from emp where deptno=30;
+
+
+13. List the jobs that are unique to department 20 compare to other departments present in emp table.
+
+
+select distinct(job) from emp where deptno=20 minus select distinct(job) from emp where deptno=30 or deptno=10;
+
+
+
+14. List the employees belong to department of MILLER.
+
+
+select empno, ename ,job ,deptno from emp where deptno=(select deptno from emp where ename ='MILLER')
+
+
+15. Display all employee details whose salary is greater than average salary of employees whose date of joining is before 1st April 81.
+
+
+ select ename,sal from emp where sal>(select avg(sal) from emp where hiredate< '01-APR-81');
+
+ select * from emp where sal>(select avg(sal) from emp where hiredate<'01-apr-81');
+
+
+
+16. List the job with highest average salary.
+
+
+
+
+17. Find the details of the employees of the department whose manager no is 7698.
+
+
+select * from emp where deptno in(select deptno from emp where mgr=7698);
+
+
+18. List the names of the employees who earn lowest salary in each department.
+
+
+select * from emp where sal in(select min(sal) from emp group by deptno);
+
+
+19. List the employee details whose salary greater than the average salary for their department.
+
+
+select e.empno,ename,e.sal,e.deptno from emp e where e.sal>(select avg(e1.sal) from emp e1 where e.deptno=e1.deptno);
+
+
+20. List all employees who work in DALLAS and earn more than any employee working in CHICAGO.
+
+
+select ename from emp e join dept d on e.deptno=d.deptno where loc like 'DALLAS' and sal>(select max(sal) from emp e1 join dept d1 on e1.deptno=d1.deptno where loc like 'CHICAGO')
+
+

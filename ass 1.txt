@@ -1,0 +1,155 @@
+CREATE TABLE Client_Master (
+    Client_no VARCHAR2(6) PRIMARY KEY CHECK (Client_no LIKE 'C%'),
+    Name VARCHAR2(30) NOT NULL,
+    Address1 VARCHAR2(30),
+    Address2 VARCHAR2(30),
+    City VARCHAR2(15),
+    State VARCHAR2(15),
+    Pincode NUMBER(6),
+    Balance_due NUMBER(10,2)
+);
+
+INSERT INTO client_master VALUES('C001','Ivan Bayross','P-76','Worli','Bombay','Maharashtra',400054,15000);
+
+INSERT INTO client_master VALUES('C002','Vandana Satiwala','128','Adams Street','Madras','Tamil Nadu',780001,0);
+
+INSERT INTO client_master VALUES('C003','Pramada Jaguste','157','Gopalpur','Kolkata','West Bengal',700058,5000);
+
+INSERT INTO client_master VALUES('C004','Basu Navindgi','A/12','Nariman','Bombay','Maharashtra',400056,0);
+
+INSERT INTO client_master VALUES('C005','Ravi Shreedharan','B/34','Rajnagar','Delhi','Delhi',100001,2000);
+
+INSERT INTO client_master VALUES('C006','Rukmini','Q-12','Bandra','Bombay','Maharashtra',400050,0);
+
+
+
+
+CREATE TABLE Product_Master(
+      Product_no VARCHAR2(6) PRIMARY KEY CHECK (Product_no LIKE 'P%'),
+      Description VARCHAR2(40) NOT NULL,
+      Profit_percent NUMBER(4,2) NOT NULL,
+      Unit_measure VARCHAR2(10) NOT NULL,
+      Qty_on_hand NUMBER(8) NOT NULL,
+      Reorder_level NUMBER(8) NOT NULL,     
+      Sell_price NUMBER(8,2) NOT NULL CHECK (Sell_price>0),
+      Cost_price NUMBER(8,2) NOT NULL, CHECK (Cost_PRICE>0)
+);
+
+INSERT INTO Product_Master VALUES ('P00001','1.44 Floppies',5,'Piece',100,20,525,500);
+
+INSERT INTO Product_master VALUES('P03453','Monitors',6,'Piece',10,3,12000,11280);
+
+INSERT INTO Product_master VALUES('P06734','Mouse',5,'Piece',20,5,1050,100);
+
+INSERT INTO Product_master VALUES('P07865','1.22 Floppies',5,'Piece',100,20,525,500);
+
+INSERT INTO Product_master VALUES('P07868','Keyboard',2,'Piece',10,3,3150,3050);
+
+INSERT INTO Product_master VALUES('P07885','CD Drive',2.5,'Piece',10,3,5250,5100);
+
+INSERT INTO Product_master VALUES('P07965','540 HDD',4,'Piece',10,3,8400,8000);
+
+INSERT INTO Product_master VALUES('P07975','1.44 Drive',5,'Piece',10,3,1050,900);
+
+INSERT INTO Product_master VALUES('P08865','1.22 Drive',5,'Piece',2,3,1025,850);
+
+
+CREATE TABLE Salesman_Master (
+    Salesman_no VARCHAR2(6) PRIMARY KEY CHECK (Salesman_no LIKE 'S%'),
+    Salesman_name VARCHAR2(30) NOT NULL,
+    Address1 VARCHAR2(30) NOT NULL,
+    Address2 VARCHAR2(30),
+    City VARCHAR2(20),
+    Pincode NUMBER(8),
+    State VARCHAR2(20),
+    Sal_amt NUMBER(8,2) NOT NULL CHECK (Sal_amt > 0)
+);
+
+
+INSERT INTO Salesman_master VALUES('S001','Kiran','A/14','Worli','Bombay',400002,'Maharastra',3000);
+
+INSERT INTO Salesman_master VALUES('S002','Manish','65','Nariman','Bombay',400001,'Maharastra',3000);
+
+INSERT INTO Salesman_master VALUES('S003','Ravi','P-7','Bandra','Bombay',400032,'Maharastra',3000);
+
+INSERT INTO Salesman_master VALUES('S004','Asish','A/5','Juhu','Bombay',400044,'Maharastra',3000);
+
+
+ CREATE TABLE Sales_Order
+ (
+ Order_no varchar(6),
+ Order_date DATE,
+ Client_no varchar2(6) ,
+ Salesman_no varchar2(6) ,
+ Delivery_type char(1) Default 'F',
+ Bill_y_n char(1),
+ Delivery_date DATE,
+ Order_status varchar2(10),
+ Constraint salesorder_pk PRIMARY KEY(Order_no),
+ Constraint salesorder_ck1 CHECK(Order_no LIKE 'O%'),
+ Constraint salesorder_ck2 CHECK(Delivery_type IN ('P','F')),
+ Constraint salesorder_ck3 CHECK(Delivery_date>=Order_date),
+ Constraint salesorder_ck4 CHECK(Order_status IN ('InProcess','Fullfilled','BackOrder','Cancelled'))
+ );
+
+
+
+INSERT INTO Sales_Order VALUES ('O19001', TO_DATE('12-Jan-96', 'DD-Mon-YY'), 'C001', 'S001', 'F', 'N', TO_DATE('20-Jan-96', 'DD-Mon-YY'), 'InProcess');
+
+INSERT INTO Sales_Order VALUES ('O19002', TO_DATE('25-Jan-96', 'DD-Mon-YY'), 'C002', 'S002', 'P', 'N', TO_DATE('27-Jan-96', 'DD-Mon-YY'), 'BackOrder');
+
+INSERT INTO Sales_Order VALUES ('O46865', TO_DATE('18-Feb-96', 'DD-Mon-YY'), 'C003', 'S003', 'F', 'Y', TO_DATE('20-Feb-96', 'DD-Mon-YY'), 'Fullfilled');
+
+INSERT INTO Sales_Order VALUES ('O19003', TO_DATE('03-Apr-96', 'DD-Mon-YY'), 'C001', 'S001', 'F', 'Y', TO_DATE('07-Apr-96', 'DD-Mon-YY'), 'Fullfilled');
+
+INSERT INTO Sales_Order VALUES ('O46866', TO_DATE('20-May-96', 'DD-Mon-YY'), 'C004', 'S002', 'P', 'N', TO_DATE('22-May-96', 'DD-Mon-YY'), 'Cancelled');
+
+INSERT INTO Sales_Order VALUES ('O19008', TO_DATE('24-May-96', 'DD-Mon-YY'), 'C005', 'S004', 'F', 'N', TO_DATE('26-May-96', 'DD-Mon-YY'), 'InProcess');
+
+alter table Sales_Order add constraint salesorder_fk1 foreign key(Client_no) references Client_Master(Client_no);
+
+alter table Sales_Order add constraint salesorder_fk2 foreign key(Salesman_no) references Salesman_Master(Salesman_no);
+
+
+ create table Sales_Order_Details
+ (
+ Order_no varchar2(6),
+ Product_no varchar2(6),
+ Qty_ordered number(8),
+ Qty_disp number(8),
+ Product_rate number(10,2)
+ );
+
+INSERT INTO Sales_Order_Details VALUES('O19001','P00001',4,4,525);
+
+INSERT INTO Sales_Order_Details VALUES('O19001','P07965',2,1,8400);
+
+INSERT INTO Sales_Order_Details VALUES('O19001','P07885',2,1,5250);
+
+INSERT INTO Sales_Order_Details VALUES('O19002','P00001',10,0,525);
+
+INSERT INTO Sales_Order_Details VALUES('O46865','P07868',3,3,3150);
+
+INSERT INTO Sales_Order_Details VALUES('O46865','P07885',3,1,52500);
+
+INSERT INTO Sales_Order_Details VALUES('O46865','P00001',10,10,525);
+
+INSERT INTO Sales_Order_Details VALUES('O46865','P03453',4,4,1050);
+
+INSERT INTO Sales_Order_Details VALUES('O19003','P03453',2,2,1050);
+
+INSERT INTO Sales_Order_Details VALUES('O19003','P06734',1,1,12000);
+
+INSERT INTO Sales_Order_Details VALUES('O46866','P07965',1,0,8400);
+
+INSERT INTO Sales_Order_Details VALUES('O46866','P07975',1,0,1050);
+
+INSERT INTO Sales_Order_Details VALUES('O19008','P00001',10,5,525);
+
+INSERT INTO Sales_Order_Details VALUES('O19008','P07975',5,3,1050);
+
+alter table Sales_Order_Details add constraint sales_order_details_fk1 foreign key(Order_no) references Sales_Order(Order_no);
+
+alter table Sales_Order_Details add constraint sales_order_details_fk2 foreign key(Product_no) references Product_Master(Product_no);
+
+

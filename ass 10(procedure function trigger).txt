@@ -1,0 +1,165 @@
+1. Create a Procedure INCR_OF_EMP in which you will pas empno and amount of increment. If the 
+salary of the specified employee is NULL in Employee table raised the exception ‘Salary Missing’ and 
+display the message ‘This Employee has NULL salary’ else update the salary of the employee.
+Invoke the INCR_OF_EMP procedure from SQL prompt with some empno and increment amount 
+and follow the consequences.
+
+
+create or replace procedure incr_of_emp(emp_no number,amt_incr number)
+is
+	psal emp.sal%type;
+	salary_missing exception;
+begin
+	select sal into psal from emp where empno=emp_no;
+	if psal is null then
+		raise salary_missing;
+	else
+		update emp set sal = sal+ amt_incr where empno=emp_no;
+	end if;
+exception
+	when salary_missing then
+		dbms_output.put_line(emp_no||'has salary is null');
+	when no_data_found then
+		dbms_output.put_line(emp_no||'no such employee');
+end;
+/
+
+
+select * from emp where empno=7698;
+
+execute incr_of_emp(7698,1200);
+
+select * from emp where empno=7698;
+
+
+
+
+
+2. Create a function REVIEW_EMP in which we will pass empno as parameter and return the 
+incremented values of salary based on the following condition:
+If salary <= 15000 then increment will be 20%,
+If salary >15000 and salary <= 30000 then increment will be 30%
+Else increment will be 40%.
+Call the REVIEW_EMP function from a PL/SQL Block with empno = 7698 and display the result on the 
+screen.
+
+
+create or replace function review_emp(emp_no number)
+return number
+is
+	incr emp.sal%type;
+	net emp.sal%type;
+	vempno emp.empno%type;
+	vsal emp.sal%type;
+	vcomm emp.comm%type;
+begin
+	select empno,sal,nvl(comm,0) into vempno,vsal,vcomm from emp
+	where empno=emp_no;
+	net := vsal+vcomm;
+
+	if vsal<=1500 then
+		incr := net*0.2;
+	elsif vsal>1500 and vsal<=3000 then
+		incr := net*0.3;
+	else
+		incr := net*0.4;
+	end if;
+	return(incr);
+end review_emp;
+/
+
+
+
+
+3. Create a trigger UPPER_STRING for the employee table, which makes the entry in ENAME column in UPPER CASE.
+
+
+create table emp_test as select ename from emp;
+
+
+
+create or replace trigger upper_str
+	before insert or update of ename on emp_test
+	for each row
+	begin
+		:new.ename:=upper(:new.ename);
+	end;
+/
+
+
+
+insert into emp_test values('modon');
+
+select * from emp_test;
+
+
+
+
+
+4. Write a trigger TOTAL_SALARY to maintain a derived column TOTSAL of Dept table that stores total salary of all employees in a department.
+
+
+create or replace trigger total_salary
+after delete or insert or update of deptno,sal on emp
+for each row
+begin
+	if deleting or (updating and :old.deptno != :new.deptno) then
+		update dept set totsal = totsal - :old.sal where deptno = :old.deptno;
+	end if;
+
+	if inserting or(updating and :old.deptno != :new.deptno) then
+		update dept set totsal = totsal + :new.sal where deptno = :new.deptno;
+	end if;
+
+	if (updating and : old.deptno != :new.deptno and :old.sal != :new.sal) then
+		update dept set totsal = totsal - :old.sal + :new.sal where deptno = :old.deptno;
+	end if;
+end;
+/
+
+
+
+5. Create a INSTEAD OF TRIGGER in which, if a delete statement is fired on a VIEW, say V1 for an employee Name, then the corresponding employee’s records gets deleted from Employee table.
+
+
+CREATE VIEW V1 AS 
+SELECT EMPNO, ENAME, EMP.DEPTNO, JOB, SAL, DNAME, LOC FROM EMP, DEPT
+WHERE EMP.DEPTNO = DEPT.DEPTNO;
+
+CREATE OR REPLACE TRIGGER T1
+INSTEAD OF DELETE ON V1
+FOR EACH ROW
+BEGIN
+	DELETE FROM EMP WHERE DEPTNO = :old.DEPTNO;
+	DELETE FROM DEPT WHERE DEPTNO = :old.DEPTNO;
+END;
+/
+
+
+
+6. Write a SQL query by which you will see the code that defines the TOTAL_SALARY trigger.
+
+
+
+USER_TRIGGERS -- ALL TRIGGERS IN THE DB
+ALL_TRIGGERS -- ALL TRIGGERS ACCESSIBLE
+DBA_TRIGGERS -- OWNER
+
+DESC USER_TRIGGERS;
+
+SELECT DESCRIPTION FROM USER_TRIGGERS WHERE TRIGGER_NAME LIKE 'TOTAL_SALARY';
+
+
+7. Drop the TOTAL_SALARY trigger from the database.
+
+DROP TRIGGER TRIGGERNAME;
+
+
+
+	
+
+
+
+
+
+		
